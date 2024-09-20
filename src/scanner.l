@@ -12,7 +12,7 @@ int yycol = 1;
 int scanlineno = 0;
 int yyval; 
 char* yyerror;
-char *yyoutput;
+
 void updateCol(); //TODO: Implement this function to keep track of column numbers
 void countLines(); //TODO: Implement this function to keep track of line numbers
 int processString(); //TODO: Implement this function to check for illegal escape sequences in string literals and print out escape sequences correctly.
@@ -181,7 +181,7 @@ int processString(){
 		}
 	}
 	
-	yyoutput = (char*)malloc(yyleng + 1);
+	char *yyoutput = (char*)malloc(yyleng + 1);
 	int nyy_index, nbuffer;
 	char *oyy_pntr = yyoutput;
 	for(nyy_index = 0; nyy_index < yyleng; nyy_index++){
@@ -208,6 +208,8 @@ int processString(){
 		}
 		oyy_pntr++;
 	}
+	strcpy(yytext, yyoutput);
+	free(yyoutput);
 	return STRCONST;
 }
 
