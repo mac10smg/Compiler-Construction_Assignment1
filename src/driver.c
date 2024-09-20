@@ -2,12 +2,10 @@
 #include<stdio.h>
 
 extern char *yytext;
-
 extern int yylineno;
 extern int yycol;
 extern int yyval;
 extern char* yyerror;
-extern char* yyoutput;
 
 void printToken(int tokenNum) {
   switch(tokenNum) {
@@ -21,7 +19,7 @@ void printToken(int tokenNum) {
     printf("<CHARACTER, %s, ASCII = %d> : (%d:%d)\n", yytext, yyval, yylineno, yycol);
     break;
   case STRCONST:
-    printf("<STRING, %s> : (%d:%d)\n", yyoutput, yylineno, yycol);
+    printf("<STRING, %s> : (%d:%d)\n", yytext, yylineno, yycol);
     break;
   case KWD_IF:
     printf("<KEYWORD, if> : (%d:%d)\n", yylineno, yycol);
