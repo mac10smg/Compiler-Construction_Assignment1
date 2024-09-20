@@ -166,12 +166,19 @@ void countLines(){
 int processString(){
 	int yy_index;
 	int buffer;
+
+	/* First scan yytext as a string literal to check for illegal escaped sequence
+	//This is quite simple, just need to keep track to pointer, one at the / and 
+	//then one at one position at head of the previous pointer. Then, check if that 
+	//character is valid, if not return error
+	*/
+
 	for(yy_index = 0; yy_index < yyleng; yy_index++){
 		if (yytext[yy_index] == '\\'){
 			buffer = yy_index + 1; 
 			if((yytext[buffer] != 'n')&&(yytext[buffer] != 't')){
 				if((yytext[buffer] != '\"')&&(yytext[buffer] != '\\')){
-					yyerror = "Bad escaped sequence found in String";
+					yyerror = "Unrecognized escape character in String";
 					return ERROR;
 				}
 			if(yytext[buffer] == '\\'){
@@ -181,6 +188,9 @@ int processString(){
 		}
 	}
 	
+	/*If the string have escape sequence and is illegal, then we don't need 
+	//to bother to processed the string, else we need to process these string 
+	*/
 	char *yyoutput = (char*)malloc(yyleng + 1);
 	int nyy_index, nbuffer;
 	char *oyy_pntr = yyoutput;
@@ -208,6 +218,8 @@ int processString(){
 		}
 		oyy_pntr++;
 	}
+
+	*oyy_pntr = '\0'; //Make sure we terminate the string properly
 	strcpy(yytext, yyoutput);
 	free(yyoutput);
 	return STRCONST;
