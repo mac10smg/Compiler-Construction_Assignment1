@@ -7,9 +7,9 @@
 #include <stdlib.h>
 #include "tokendef.h"
 
-int scancol = 0;
+int scancol = 1;
 int yycol = 1;
-int scanlineno = 0;
+int scanlineno = 1;
 int yyval; 
 char* yyerror;
 
@@ -22,18 +22,18 @@ int processString(); //TODO: Implement this function to check for illegal escape
 newline         \n			
 whitespace      [ \t]+				
 integer         [1-9][0-9]*|0[^0-9]	
-character       \'([^\']|\\[\\|n|t|\'])\'		
+character       \'([^\']|\\[\\nt\'])\'		
 
-string      	\"(\\[\"]|[^"\n])*\"
+string      	\"(\\[\"]|[^"\n])*\" 
 untermstring 	\"(\\[\"]|[^"\n])*[^"\n]$
 multlnstring  	\"(\\[\"]|[^"])+(\\[\"]|[^"\n])+\"
 
 
 
 
-comment         \/\*([^\n]|\/|\*)*\*\/
-multlncomment   \/\*([^\*\/]|\\|[\*])+([^\*\/\n]|\\|[\*])+\*\/
-untermcomment   \/\*([^\n\*\/]|\*|\/)*[^\n\*\/]$
+comment         \/\*\/?([^\n\/]|[^\*]\/)*\*\/
+multlncomment   \/\*\/?([^\/]|[^\*]\/)*\n([^\/]|[^\*]\/)*\*\/
+untermcomment   \/\*\/?([^\n\/]|[^\*]\/)*$ 
 
 identifier      [a-zA-z][a-zA-Z0-9]*
 illidentifier   [0-9][a-zA-Z]+
@@ -49,52 +49,52 @@ yylineno = 1;
 
  /* Keywords */;
 
-if		{yycol += 2; return KWD_IF;}
-else 	{yycol += 4; return KWD_ELSE;}
-while 	{yycol += 5; return KWD_WHILE;}
-int		{yycol += 3; return KWD_INT;}
-string 	{yycol += 6; return KWD_STRING;}
-char	{yycol += 4; return KWD_CHAR;}
-return	{yycol += 6; return KWD_RETURN;}
-void	{yycol += 4; return KWD_VOID;}
+if		{updateCol(); return KWD_IF;}
+else 	{updateCol(); return KWD_ELSE;}
+while 	{updateCol(); return KWD_WHILE;}
+int		{updateCol(); return KWD_INT;}
+string 	{updateCol(); return KWD_STRING;}
+char	{updateCol(); return KWD_CHAR;}
+return	{updateCol(); return KWD_RETURN;}
+void	{updateCol(); return KWD_VOID;}
 
  /* Operators */;
 
-\+		{yycol += 1; return OPER_ADD;}
-\-		{yycol += 1; return OPER_SUB;}
-\*		{yycol += 1; return OPER_MUL;}
-\/		{yycol += 1; return OPER_DIV;}
-\%		{yycol += 1; return OPER_MOD;}
-\<		{yycol += 1; return OPER_LT;}
-\> 		{yycol += 1; return OPER_GT;}
-\<\= 	{yycol += 2; return OPER_LTE;}
-\>\=	{yycol += 2; return OPER_GTE;}
-\=\= 	{yycol += 2; return OPER_EQ;}
-\!\=	{yycol += 2; return OPER_NEQ;}
-\=		{yycol += 2; return OPER_ASGN;}
-\[		{yycol += 1; return LSQ_BRKT;}
-\]		{yycol += 1; return RSQ_BRKT;}
-\{		{yycol += 1; return LCRLY_BRKT;}
-\}		{yycol += 1; return RCRLY_BRKT;}
-\(		{yycol += 1; return LPAREN;}
-\)		{yycol += 1; return RPAREN;}
-\,		{yycol += 1; return COMMA;}
-\;		{yycol += 1; return SEMICLN;}
-\@		{yycol += 1; return OPER_AT;}
-\+\+	{yycol += 2; return OPER_INC;}
-\-\-	{yycol += 2; return OPER_DEC;}
-\&&		{yycol += 2; return OPER_AND;}
-\|\|	{yycol += 2; return OPER_OR;}
-\!		{yycol += 1; return OPER_NOT;}
+\+		{updateCol(); return OPER_ADD;}
+\-		{updateCol(); return OPER_SUB;}
+\*		{updateCol(); return OPER_MUL;}
+\/		{updateCol(); return OPER_DIV;}
+\%		{updateCol(); return OPER_MOD;}
+\<		{updateCol(); return OPER_LT;}
+\> 		{updateCol(); return OPER_GT;}
+\<\= 	{updateCol(); return OPER_LTE;}
+\>\=	{updateCol(); return OPER_GTE;}
+\=\= 	{updateCol(); return OPER_EQ;}
+\!\=	{updateCol(); return OPER_NEQ;}
+\=		{updateCol(); return OPER_ASGN;}
+\[		{updateCol(); return LSQ_BRKT;}
+\]		{updateCol(); return RSQ_BRKT;}
+\{		{updateCol(); return LCRLY_BRKT;}
+\}		{updateCol(); return RCRLY_BRKT;}
+\(		{updateCol(); return LPAREN;}
+\)		{updateCol(); return RPAREN;}
+\,		{updateCol(); return COMMA;}
+\;		{updateCol(); return SEMICLN;}
+\@		{updateCol(); return OPER_AT;}
+\+\+	{updateCol(); return OPER_INC;}
+\-\-	{updateCol(); return OPER_DEC;}
+\&&		{updateCol(); return OPER_AND;}
+\|\|	{updateCol(); return OPER_OR;}
+\!		{updateCol(); return OPER_NOT;}
 
  /* Identifiers */;
-{identifier}    {yycol += yyleng; return ID;}
-{illidentifier} {yycol += yyleng; yyerror = "Illegal identifier"; return ERROR;}
+{identifier}    {updateCol(); return ID;}
+{illidentifier} {updateCol(); yyerror = "Illegal identifier"; return ERROR;}
 
  /* Constants */;
-{integer}       {yycol += yyleng; return INTCONST;}
-{integerlead0}  {yycol += yyleng; yyerror = "Integers may not have leading zeros"; return ERROR;}
-{character}     {yycol += 3; 
+{integer}       {updateCol(); return INTCONST;}
+{integerlead0}  {updateCol(); yyerror = "Integers may not have leading zeros"; return ERROR;}
+{character}     {updateCol(); 
 				int charLeng = yyleng;
 				if(charLeng == 3){
 					char c = yytext[1]; 
@@ -123,15 +123,15 @@ void	{yycol += 4; return KWD_VOID;}
 
 {string}        {updateCol(); return processString();}
 {untermstring}  {updateCol(); yyerror = "Unterminated string"; return ERROR;}
-{multlnstring}  {updateCol(); yyerror = "String spans multiple lines"; return ERROR;} 
+{multlnstring}  {updateCol(); countLines(); yyerror = "String spans multiple lines"; return ERROR;} 
 
  /* Comments */;
-{comment}       {yycol += yyleng; return CMMNT;}
-{untermcomment} {yycol += yyleng; yyerror = "Unterminated comments"; return ERROR;}
-{multlncomment} {updateCol(); return MULTLN_CMMNT;}
+{comment}       {updateCol(); return CMMNT;}
+{untermcomment} {updateCol(); yyerror = "Unterminated comments"; return ERROR;}
+{multlncomment} {updateCol(); countLines(); return MULTLN_CMMNT;} 
 
  /* Other */;
-{newline}       	{yycol = 1; yylineno++;} 
+{newline}       	{scancol = 1; scanlineno++; yylineno = scanlineno;} 
 {whitespace}   		{/*Take no actions for whiteline*/}
 .               	{return ILLEGAL_TOK;}
 
@@ -140,26 +140,18 @@ void	{yycol += 4; return KWD_VOID;}
 /* user routines */
 
 void updateCol(){
-	char *copyChar; 
-	copyChar = (char*)malloc(yyleng);
-	strcpy(copyChar, yytext);
-	char *ptr = copyChar;
-	
-	while(*ptr != '\0'){
-		if (*ptr == '\n'){
-			countLines();
-		}else{
-			scancol++;
-		}
-		ptr++;
-	}
-	yycol = yycol + scancol;
-	yylineno += scanlineno;
+	yycol = scancol;
+	scancol += yyleng;
 }	
 
 void countLines(){
-	scanlineno++;
-	scancol = 1;
+	yylineno = scanlineno;
+	for(int i = 0; i < yyleng; i++){
+		if(yytext[i] == '\n'){
+			scanlineno++;
+			scancol = 1;
+		}
+	}
 }
 
 
