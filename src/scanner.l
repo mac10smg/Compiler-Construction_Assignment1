@@ -29,7 +29,7 @@ untermstring 	\"(\\[\"]|[^"\n])*[^"\n]$
 multlnstring  	\"(\\[\"]|[^"])+(\\[\"]|[^"\n])+\"
 
 
-
+longchar 		\'([^\']|\\[\\nt\']){whitespace}([^\']|\\[\\nt\'])+\'
 
 comment         \/\*\/?([^\n\/]|[^\*]\/)*\*\/
 multlncomment   \/\*\/?([^\/]|[^\*]\/)*\n([^\/]|[^\*]\/)*\*\/
@@ -94,6 +94,7 @@ void	{updateCol(); return KWD_VOID;}
  /* Constants */;
 {integer}       {updateCol(); return INTCONST;}
 {integerlead0}  {updateCol(); yyerror = "Integers may not have leading zeros"; return ERROR;}
+{longchar}		{updateCol(); yyerror ="Character constant too long for its type"; return ERROR;}
 {character}     {updateCol(); 
 				int charLeng = yyleng;
 				if(charLeng == 3){
