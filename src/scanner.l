@@ -36,7 +36,7 @@ multlncomment   \/\*\/?([^\/]|[^\*]\/)*\n([^\/]|[^\*]\/)*\*\/
 untermcomment   \/\*\/?([^\n\/]|[^\*]\/)*$ 
 
 identifier      [a-zA-z][a-zA-Z0-9]*
-illidentifier   [0-9][a-zA-Z]+
+illidentifier   [0-9][a-zA-Z]+[a-zA-Z0-9]*
 
 integerlead0    0[0-9]+
 
