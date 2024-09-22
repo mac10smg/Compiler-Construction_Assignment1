@@ -52,5 +52,5 @@
 #define CMMNT           289
 #define MULTLN_CMMNT    290 
 /*error code*/
-#define ILLEGAL_TOK 289
+#define ILLEGAL_TOK 291
 #define ERROR       404
