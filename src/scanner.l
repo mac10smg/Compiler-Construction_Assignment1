@@ -19,7 +19,7 @@ int processString(); //TODO: Implement this function to check for illegal escape
 %}
 
 
-newline         \n			
+newline         [\n\r]			
 whitespace      [ \t]+				
 integer         [1-9][0-9]*|0[^0-9]	
 character       \'([^\']|\\[\\nt\'])\'		
@@ -33,7 +33,7 @@ longchar 		\'([^\']|\\[\\nt\']){whitespace}([^\']|\\[\\nt\'])+\'
 
 comment         \/\*\/?([^\n\/]|[^\*]\/)*\*\/
 multlncomment   \/\*\/?([^\/]|[^\*]\/)*\n([^\/]|[^\*]\/)*\*\/
-untermcomment   \/\*\/?([^\n\/]|[^\*]\/)*$ 
+untermcomment   \/\*\/?([^\n\/]|[^\*]\/)*
 
 identifier      [a-zA-z][a-zA-Z0-9]*
 illidentifier   [0-9][a-zA-Z]+[a-zA-Z0-9]*
