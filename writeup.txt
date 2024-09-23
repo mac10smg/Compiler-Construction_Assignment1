@@ -1,0 +1,8 @@
+Tran Minh Nhat Le
+Taylor Fanely-Luevano
+
+CS4318_5331
+
+We will continue to work on the project each day until all the requirements are met and the deliverables are prepared. We will utilize Github to exhange and adjust the coding and Slack to communicate ideas and debugging.
+
+We have prepared extra test cases that pushed the limits of how well the scanner works through 6 short tests and 1 long test, each with a variety of valid and invalid tokens for the scanner to work through. We also utilized the Texas State CS servers of Zeus and Eros to run the program and scan the test cases.
