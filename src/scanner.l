@@ -161,7 +161,7 @@ void countLines(){
 int processString(){
 	int yy_index;
 	int buffer;
-
+	int yyscan = yycol + 1;
 	/* First scan yytext as a string literal to check for illegal escaped sequence
 	//This is quite simple, just need to keep track to pointer, one at the / and 
 	//then one at one position at head of the previous pointer. Then, check if that 
@@ -173,14 +173,17 @@ int processString(){
 			buffer = yy_index + 1; 
 			if((yytext[buffer] != 'n')&&(yytext[buffer] != 't')){
 				if((yytext[buffer] != '\"')&&(yytext[buffer] != '\\')){
+					yycol = yyscan;
 					yyerror = "Unrecognized escape character in String";
 					return ERROR;
 				}
 			if(yytext[buffer] == '\\'){
+					yyscan++;
 					yy_index++;	//Skip to the next position in yytext since // could cause some false positive
 				}
 			}
 		}
+		yyscan++;
 	}
 	
 	/*If the string have escape sequence and is illegal, then we don't need 
