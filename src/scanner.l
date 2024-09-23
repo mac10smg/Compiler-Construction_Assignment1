@@ -19,7 +19,8 @@ int processString(); //TODO: Implement this function to check for illegal escape
 %}
 
 
-newline         [\n\r]			
+newline         \n	
+enter 			\r		
 whitespace      [ \t]+				
 integer         [1-9][0-9]*|0[^0-9]	
 character       \'([^\']|\\[\\nt\'])\'		
@@ -33,7 +34,7 @@ longchar 		\'([^\']|\\[\\nt\']){whitespace}([^\']|\\[\\nt\'])+\'
 
 comment         \/\*\/?([^\n\/]|[^\*]\/)*\*\/
 multlncomment   \/\*\/?([^\/]|[^\*]\/)*\n([^\/]|[^\*]\/)*\*\/
-untermcomment   \/\*\/?([^\n\/]|[^\*]\/)*
+untermcomment   \/\*[^\n]?\/?([^\n\/]|[^\*\n]\/[\*]?)*
 
 identifier      [a-zA-z][a-zA-Z0-9]*
 illidentifier   [0-9][a-zA-Z]+[a-zA-Z0-9]*
@@ -133,6 +134,7 @@ void	{updateCol(); return KWD_VOID;}
 
  /* Other */;
 {newline}       	{scancol = 1; scanlineno++; yylineno = scanlineno;} 
+{enter}				{/*Take no actions for enter*/}
 {whitespace}   		{/*Take no actions for whiteline*/}
 .               	{return ILLEGAL_TOK;}
 
@@ -146,13 +148,13 @@ void updateCol(){
 }	
 
 void countLines(){
-	yylineno = scanlineno;
 	for(int i = 0; i < yyleng; i++){
 		if(yytext[i] == '\n'){
 			scanlineno++;
 			scancol = 1;
 		}
 	}
+	yylineno = scanlineno;
 }
 
 
